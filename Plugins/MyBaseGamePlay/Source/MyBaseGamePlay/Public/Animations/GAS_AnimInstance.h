@@ -39,11 +39,16 @@ public:
 	bool IsNotMoving() const { return Speed == 0; }
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
-	FORCEINLINE float GetYawSpeed() const { return YawSpeed; }
+	float GetYawSpeed() const { return YawSpeed; }
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
-	FORCEINLINE float GetSmoothedYawSpeed() const { return SmoothedYawSpeed; }
+	float GetSmoothedYawSpeed() const { return SmoothedYawSpeed; }
 
+	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+	bool GetIsJumping() const { return bIsJumping; }
+
+	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+	bool GetIsOnGround() const { return !bIsJumping; }
 
 private:
 	UPROPERTY()
@@ -83,8 +88,14 @@ private:
 	float YawSpeedLerpToZeroSpeed = 30.f;
 
 	/**
+	 * 是否正在跳跃
+	 */
+	bool bIsJumping;
+
+	/**
 	 * 前一帧的角色旋转
 	 * 用于计算当前帧的旋转变化量
 	 */
 	FRotator BodyPrevRotator;
+
 };
