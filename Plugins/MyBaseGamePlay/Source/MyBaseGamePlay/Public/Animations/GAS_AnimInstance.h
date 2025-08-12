@@ -50,6 +50,13 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
 	bool GetIsOnGround() const { return !bIsJumping; }
 
+	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+	float GetLookYawOffset() const { return LookRotatorOffset.Yaw; }
+
+	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+	float GetLookPitchOffset() const { return LookRotatorOffset.Pitch; }
+
+
 private:
 	UPROPERTY()
 	TObjectPtr<class ACharacter> OwnerCharacter;
@@ -98,4 +105,8 @@ private:
 	 */
 	FRotator BodyPrevRotator;
 
+	/**
+	 * Ãé×¼Æ«ÒÆ
+	 */
+	FRotator LookRotatorOffset;
 };

@@ -46,6 +46,11 @@ void UGAS_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		}
 		// 使用线性插值（FInterpTo）对 yaw 速度进行平滑处理，提高动画过渡质量
 		SmoothedYawSpeed = UKismetMathLibrary::FInterpTo(SmoothedYawSpeed, YawSpeed, DeltaSeconds, YawLerpSpeed);
+
+		// 获取拥有者角色的基础瞄准旋转
+		FRotator ControlRotator = OwnerCharacter->GetBaseAimRotation();
+		// 相机和角色身体之间的旋转变化量
+		LookRotatorOffset = UKismetMathLibrary::NormalizedDeltaRotator(ControlRotator, BodyPrevRotator);
 	}
 	
 	if (OwnerMovementComponent)
