@@ -12,6 +12,32 @@ AGAS_Character::AGAS_Character()
 	bReplicates = true;
 	// 禁用网格的碰撞功能
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	GAS_AbilitySystemComponent = CreateDefaultSubobject<UGAS_AbilitySystemComponent>(TEXT("GAS_AbilitySystemComponent"));
+	GAS_AttributeSet = CreateDefaultSubobject<UGAS_AttributeSet>(TEXT("GAS_AttributeSet"));
+
+}
+
+void AGAS_Character::ServerSideInit()
+{
+	// 设置当前角色作为Owner和Avatar，用于后续的能力和效果应用
+	GAS_AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	GAS_AbilitySystemComponent->ApplyInitialEffects();
+}
+
+void AGAS_Character::ClientSideInit()
+{
+	// 设置当前角色作为Owner和Avatar，用于后续的能力和效果应用
+	GAS_AbilitySystemComponent->InitAbilityActorInfo(this, this);
+}
+
+void AGAS_Character::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (NewController && !NewController->IsPlayerController())
+	{
+		ServerSideInit();
+	}
 }
 
 // Called when the game starts or when spawned
@@ -33,5 +59,10 @@ void AGAS_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+UAbilitySystemComponent* AGAS_Character::GetAbilitySystemComponent() const
+{
+	return GAS_AbilitySystemComponent;
 }
 
