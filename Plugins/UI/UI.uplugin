@@ -18,7 +18,7 @@
 		{
 			"Name": "UI",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "PreDefault"
 		}
 	]
 }

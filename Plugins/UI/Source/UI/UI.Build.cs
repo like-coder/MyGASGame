@@ -26,6 +26,7 @@ public class UI : ModuleRules
 			new string[]
 			{
 				"Core",
+                
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -38,12 +39,10 @@ public class UI : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-                "UMG", 
-				"Slate", 
-				"SlateCore",
+                "UMG",
                 "GameplayAbilities",
                 "GameplayTags",
-                "GameplayTasks"
+                "GameplayTasks",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

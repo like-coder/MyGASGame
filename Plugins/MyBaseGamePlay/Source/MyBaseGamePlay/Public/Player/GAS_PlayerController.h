@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GAS_PlayerCharacter.h"
 #include "GameFramework/PlayerController.h"
+#include "Base/GameplayWidget.h"
 #include "GAS_PlayerController.generated.h"
 
 /**
@@ -21,6 +22,17 @@ public:
 	virtual void AcknowledgePossession(APawn* P) override;
 
 private:
+	void SpawnGameplayWidget();
+	void SetAndBoundToGameplayAttributes();
+
+private:
 	UPROPERTY()
 	TObjectPtr<AGAS_PlayerCharacter> GAS_PlayerCharacter;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UGameplayWidget> GameplayWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UGameplayWidget> GameplayWidget;
+
 };

@@ -26,6 +26,7 @@ public class MyBaseGamePlay : ModuleRules
 			new string[]
 			{
 				"Core",
+				
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -42,7 +43,9 @@ public class MyBaseGamePlay : ModuleRules
 				"EnhancedInput",
                 "GameplayAbilities",
                 "GameplayTags",
-                "GameplayTasks"
+                "GameplayTasks",
+                "UMG",
+                "UI",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
