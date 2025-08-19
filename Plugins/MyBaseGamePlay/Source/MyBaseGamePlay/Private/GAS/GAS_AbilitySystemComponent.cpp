@@ -22,14 +22,14 @@ void UGAS_AbilitySystemComponent::GiveInitialAbilities()
 	// 检查当前组件是否拥有拥有者，并且拥有者是否具有网络权限（权威性） 
 	if (!GetOwner() || !GetOwner()->HasAuthority()) return;
 
-	for (const TSubclassOf<UGameplayAbility>& AbilityClass : BasicAbilities)
+	for (const TPair<ECAbilityInputID, TSubclassOf<UGameplayAbility>>& AbilityPair : BasicAbilities)
 	{
 		// 赋予技能 等级为 1
-		GiveAbility(FGameplayAbilitySpec(AbilityClass, 1, -1, nullptr));
+		GiveAbility(FGameplayAbilitySpec(AbilityPair.Value, 1, static_cast<int32>(AbilityPair.Key), nullptr));
 	}
 
-	for (const TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
+	for (const TPair<ECAbilityInputID, TSubclassOf<UGameplayAbility>>& AbilityPair : Abilities)
 	{
-		GiveAbility(FGameplayAbilitySpec(AbilityClass, 0, -1, nullptr));
+		GiveAbility(FGameplayAbilitySpec(AbilityPair.Value, 0, static_cast<int32>(AbilityPair.Key), nullptr));
 	}
 }

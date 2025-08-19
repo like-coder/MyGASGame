@@ -30,6 +30,8 @@ private:
 	void HandleLookInput(const FInputActionValue& InputActionValue);
 	// 移动的绑定函数
 	void HandleMoveInput(const FInputActionValue& InputActionValue);
+	// 技能的绑定函数
+	void HandleAbilityInput(const FInputActionValue& InputActionValue, ECAbilityInputID InputID);
 	// 获取角色视线右侧的方向向量
 	FVector GetLookRightDir() const;
 	// 获取角色视线向前的方向向量
@@ -45,6 +47,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<class UInputAction> MoveInputAction;
+
+	// 技能输入
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TMap<ECAbilityInputID, TObjectPtr<UInputAction>> GameplayAbilityInputActions;
 
 	// 管理游戏输入映射上下文
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
