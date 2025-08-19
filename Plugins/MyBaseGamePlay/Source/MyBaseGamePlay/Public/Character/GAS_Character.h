@@ -50,9 +50,32 @@ public:
 private:
 	void ConfigureOverHeadStatusWidget();
 	void ConfigureWithASC(UAbilitySystemComponent* AbilitySystemComponent, UOverHeadStatsGauge* OverHeadStatsGauge);
+
+	/**
+	 * @brief 更新头顶状态条可见性\n
+	 * 根据玩家与角色之间的距离判断是否启用头顶UI组件的显示。\n
+	 * 该方法通过定时器周期性调用。
+	 */
+	void UpdateHeadGaugeVisibility();
 	// 头顶UI
 	UPROPERTY(VisibleDefaultsOnly, Category = "UI")
 	TObjectPtr<UWidgetComponent> OverHeadWidgetComponent;
+	/**
+	 * @brief 头顶状态条更新间隔时间（秒）\n
+	 * 控制头顶UI显示/隐藏检测的刷新频率，单位为秒。\n
+	 * 可在编辑器中调整，默认值为1秒。
+	 */
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	float HeadStatGaugeVisibilityCheckUpdateGap = 1.f;
+	/**
+	 * @brief 头顶状态条可见性检测的距离平方阈值\n
+	 * 当玩家与角色之间的距离平方小于该值时，显示头顶UI；\n
+	 * 可在编辑器中调整，默认值为10,000,000。
+	 */
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	float HeadStatGaugeVisibilityRangeSquared = 10000000.f;
+	// 用于控制头顶状态条可见性更新的定时器句柄
+	FTimerHandle HeadStatGaugeVisibilityUpdateTimerHandle;
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")

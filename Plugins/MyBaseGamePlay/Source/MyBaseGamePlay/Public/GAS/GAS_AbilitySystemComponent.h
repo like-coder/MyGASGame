@@ -14,9 +14,20 @@ class MYBASEGAMEPLAY_API UGAS_AbilitySystemComponent : public UAbilitySystemComp
 {
 	GENERATED_BODY()
 public:
+	// 初始效果
 	void ApplyInitialEffects();
-
+	// 技能初始化
+	void GiveInitialAbilities();
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effects")
 	TArray<TSubclassOf<UGameplayEffect>> InitialEffects;
+
+	// 基础技能
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Ability")
+	TArray<TSubclassOf<UGameplayAbility>> BasicAbilities;
+
+	// 技能
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Ability")
+	TArray<TSubclassOf<UGameplayAbility>> Abilities;
+
 };

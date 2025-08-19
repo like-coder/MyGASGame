@@ -16,3 +16,20 @@ void UGAS_AbilitySystemComponent::ApplyInitialEffects()
 		ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 	}
 }
+
+void UGAS_AbilitySystemComponent::GiveInitialAbilities()
+{
+	// 检查当前组件是否拥有拥有者，并且拥有者是否具有网络权限（权威性） 
+	if (!GetOwner() || !GetOwner()->HasAuthority()) return;
+
+	for (const TSubclassOf<UGameplayAbility>& AbilityClass : BasicAbilities)
+	{
+		// 赋予技能 等级为 1
+		GiveAbility(FGameplayAbilitySpec(AbilityClass, 1, -1, nullptr));
+	}
+
+	for (const TSubclassOf<UGameplayAbility>& AbilityClass : Abilities)
+	{
+		GiveAbility(FGameplayAbilitySpec(AbilityClass, 0, -1, nullptr));
+	}
+}
