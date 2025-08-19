@@ -1,0 +1,18 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "GAS/GAS_AbilitySystemComponent.h"
+
+void UGAS_AbilitySystemComponent::ApplyInitialEffects()
+{
+	// 检查当前组件是否拥有拥有者，并且拥有者是否具有网络权限（权威性） 
+	if (!GetOwner() || !GetOwner()->HasAuthority()) return;
+
+	for (const TSubclassOf<UGameplayEffect>& EffectClass : InitialEffects)
+	{
+		// 创建游戏效果规格句柄，用于描述要应用的效果及其上下文
+		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingSpec(EffectClass, 1, MakeEffectContext());
+		// 将游戏效果应用到自身
+		ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+	}
+}

@@ -16,6 +16,9 @@ AGAS_Character::AGAS_Character()
 	GAS_AbilitySystemComponent = CreateDefaultSubobject<UGAS_AbilitySystemComponent>(TEXT("GAS_AbilitySystemComponent"));
 	GAS_AttributeSet = CreateDefaultSubobject<UGAS_AttributeSet>(TEXT("GAS_AttributeSet"));
 
+	//添加头部的血条UI
+	OverHeadWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverHeadWidgetComponent"));
+	OverHeadWidgetComponent->SetupAttachment(GetRootComponent());
 }
 
 void AGAS_Character::ServerSideInit()
@@ -51,7 +54,7 @@ void AGAS_Character::BeginPlay()
 void AGAS_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	ConfigureOverHeadStatusWidget();
 }
 
 // Called to bind functionality to input
@@ -64,5 +67,44 @@ void AGAS_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 UAbilitySystemComponent* AGAS_Character::GetAbilitySystemComponent() const
 {
 	return GAS_AbilitySystemComponent;
+}
+
+bool AGAS_Character::IsLocallyControlledByPlayer() const
+{
+	return GetController() && GetController()->IsLocalPlayerController();
+}
+
+void AGAS_Character::ConfigureOverHeadStatusWidget()
+{
+	if (!OverHeadWidgetComponent)
+	{
+		return;
+	}
+
+	// 如果角色由本地玩家控制
+	if (IsLocallyControlledByPlayer())
+	{
+		// 隐藏头顶UI组件
+		OverHeadWidgetComponent->SetHiddenInGame(true);
+		return;
+	}
+
+	UOverHeadStatsGauge* OverHeadStatsGauge = Cast<UOverHeadStatsGauge>(OverHeadWidgetComponent->GetUserWidgetObject());
+	if (OverHeadStatsGauge)
+	{
+		// 使用能力系统组件配置头顶统计量表
+		ConfigureWithASC(GetAbilitySystemComponent(), OverHeadStatsGauge);
+		// 显示头顶UI组件
+		OverHeadWidgetComponent->SetHiddenInGame(false);
+	}
+}
+
+void AGAS_Character::ConfigureWithASC(UAbilitySystemComponent* AbilitySystemComponent, UOverHeadStatsGauge* OverHeadStatsGauge)
+{
+	if (AbilitySystemComponent)
+	{
+		OverHeadStatsGauge->GetHealthBar()->SetAndBoundToGameplayAttribute(AbilitySystemComponent, UCAttributeSet::GetHealthAttribute(), UCAttributeSet::GetMaxHealthAttribute());
+		OverHeadStatsGauge->GetManaBar()->SetAndBoundToGameplayAttribute(AbilitySystemComponent, UCAttributeSet::GetManaAttribute(), UCAttributeSet::GetMaxManaAttribute());
+	}
 }
 

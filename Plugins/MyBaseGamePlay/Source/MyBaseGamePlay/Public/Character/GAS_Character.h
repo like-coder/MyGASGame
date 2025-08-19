@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h" // IAbilitySystemInterface接口的头文件
+#include "Components/WidgetComponent.h"
+#include "Gameplay/OverHeadStatsGauge.h"
 #include "GAS/GAS_AbilitySystemComponent.h"
 #include "GAS/GAS_AttributeSet.h"
 #include "GAS_Character.generated.h"
@@ -26,6 +28,9 @@ public:
 	// 服务器中调用
 	virtual void PossessedBy(AController* NewController) override;
 
+	// 判断该角色是否由本地玩家控制
+	bool IsLocallyControlledByPlayer() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,6 +45,15 @@ public:
 //GAS组件相关
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+//UI相关组件
+private:
+	void ConfigureOverHeadStatusWidget();
+	void ConfigureWithASC(UAbilitySystemComponent* AbilitySystemComponent, UOverHeadStatsGauge* OverHeadStatsGauge);
+	// 头顶UI
+	UPROPERTY(VisibleDefaultsOnly, Category = "UI")
+	TObjectPtr<UWidgetComponent> OverHeadWidgetComponent;
+
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")
 	TObjectPtr<UGAS_AbilitySystemComponent> GAS_AbilitySystemComponent;
