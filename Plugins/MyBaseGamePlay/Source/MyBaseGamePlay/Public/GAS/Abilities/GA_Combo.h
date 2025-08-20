@@ -15,7 +15,14 @@ class MYBASEGAMEPLAY_API UGA_Combo : public UGAS_GameplayAbility
 	GENERATED_BODY()
 public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+	// Tag传入事件绑定
+	UFUNCTION()
+	void ComboChangedEventReceived(FGameplayEventData Data);
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	TObjectPtr<UAnimMontage> ComboMontage;
+
+	// 存储下一段combo名称
+	FName NextComboName;
 };
