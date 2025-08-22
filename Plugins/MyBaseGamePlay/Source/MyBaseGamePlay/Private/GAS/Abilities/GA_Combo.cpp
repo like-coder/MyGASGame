@@ -5,6 +5,7 @@
 #include "GAS/Core/TGameplayTags.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
 
 void UGA_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -34,8 +35,13 @@ void UGA_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 		// 监听“连招切换”事件（如动画通知触发）
 		UAbilityTask_WaitGameplayEvent* WaitComboChangeEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, TGameplayTags::Ability_Combo_Change, nullptr, false, false);
 		WaitComboChangeEventTask->EventReceived.AddDynamic(this, &UGA_Combo::ComboChangedEventReceived);
-		WaitComboChangeEventTask->ReadyForActivation();
+		WaitComboChangeEventTask->ReadyForActivation();		// 执行任务
 	}
+
+	// 初始化下一个连招段名称为空
+	NextComboName = NAME_None;
+	// 设置监听玩家输入（用于连击）
+	SetupWaitComboInputPress();
 }
 
 void UGA_Combo::ComboChangedEventReceived(FGameplayEventData Data)
@@ -57,4 +63,40 @@ void UGA_Combo::ComboChangedEventReceived(FGameplayEventData Data)
 	// Tag最后一段的名称比如Combo02,03,04等
 	NextComboName = TagNames.Last();
 	UE_LOG(LogTemp, Log, TEXT("Combo Changed to %s"), *NextComboName.ToString())
+}
+
+void UGA_Combo::SetupWaitComboInputPress()
+{
+	// 创建监听输入任务
+	UAbilityTask_WaitInputPress* WaitInputPressTask = UAbilityTask_WaitInputPress::WaitInputPress(this);
+	if (WaitInputPressTask)
+	{
+		// 绑定输入响应函数
+		WaitInputPressTask->OnPress.AddDynamic(this, &UGA_Combo::HandleInputPress);
+		WaitInputPressTask->ReadyForActivation();		// 执行任务
+	}
+}
+
+void UGA_Combo::HandleInputPress(float TimeWaited)
+{
+	// 重新设置监听输入任务
+	SetupWaitComboInputPress();
+	// 尝试切换到下一个连招段
+	TryCommitCombo();
+}
+
+void UGA_Combo::TryCommitCombo()
+{
+	//没有下一招直接返回
+	if (NextComboName == NAME_None)
+	{
+		return;
+	}
+
+	UAnimInstance* OwnerAnimInst = GetOwnerAnimInstance();
+	if (OwnerAnimInst)
+	{
+		// 设置蒙太奇自动切换到下一个片段，达成连击的效果
+		OwnerAnimInst->Montage_SetNextSection(OwnerAnimInst->Montage_GetCurrentSection(ComboMontage), NextComboName, ComboMontage);
+	}
 }

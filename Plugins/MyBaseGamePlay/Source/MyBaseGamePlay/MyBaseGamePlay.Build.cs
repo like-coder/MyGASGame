@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
+using UnrealBuildTool.Rules;
 
 public class MyBaseGamePlay : ModuleRules
 {
@@ -44,6 +45,7 @@ public class MyBaseGamePlay : ModuleRules
                 "GameplayAbilities",
                 "GameplayTags",
                 "GameplayTasks",
+                "AIModule",
                 "UMG",
                 "UI",
 				// ... add private dependencies that you statically link with here ...	

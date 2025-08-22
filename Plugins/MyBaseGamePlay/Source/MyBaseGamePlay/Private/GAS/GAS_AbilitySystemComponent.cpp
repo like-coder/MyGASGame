@@ -2,6 +2,7 @@
 
 
 #include "GAS/GAS_AbilitySystemComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UGAS_AbilitySystemComponent::ApplyInitialEffects()
 {

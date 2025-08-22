@@ -19,6 +19,7 @@ public:
 	void ApplyInitialEffects();
 	// 技能初始化
 	void GiveInitialAbilities();
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effects")
 	TArray<TSubclassOf<UGameplayEffect>> InitialEffects;
