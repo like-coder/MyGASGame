@@ -3,12 +3,14 @@
 
 #include "GAS/Abilities/GA_Combo.h"
 #include "GAS/Core/TGameplayTags.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
 
 void UGA_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	if (!K2_CommitAbility())
 	{
 		K2_EndAbility();
@@ -36,6 +38,14 @@ void UGA_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 		UAbilityTask_WaitGameplayEvent* WaitComboChangeEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, TGameplayTags::Ability_Combo_Change, nullptr, false, false);
 		WaitComboChangeEventTask->EventReceived.AddDynamic(this, &UGA_Combo::ComboChangedEventReceived);
 		WaitComboChangeEventTask->ReadyForActivation();		// 执行任务
+	}
+
+	// 服务器监听造成伤害事件
+	if (K2_HasAuthority())
+	{
+		UAbilityTask_WaitGameplayEvent* WaitTargetingEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, TGameplayTags::Ability_Combo_Damage);
+		WaitTargetingEventTask->EventReceived.AddDynamic(this, &UGA_Combo::DoDamage);
+		WaitTargetingEventTask->ReadyForActivation();		// 执行任务
 	}
 
 	// 初始化下一个连招段名称为空
@@ -98,5 +108,18 @@ void UGA_Combo::TryCommitCombo()
 	{
 		// 设置蒙太奇自动切换到下一个片段，达成连击的效果
 		OwnerAnimInst->Montage_SetNextSection(OwnerAnimInst->Montage_GetCurrentSection(ComboMontage), NextComboName, ComboMontage);
+	}
+}
+
+void UGA_Combo::DoDamage(FGameplayEventData Data)
+{
+	// 获取命中目标的数量
+	int32 HitResultCount = UAbilitySystemBlueprintLibrary::GetDataCountFromTargetData(Data.TargetData);
+
+	for (int32 i = 0; i < HitResultCount; ++i)
+	{
+		// 获取每个命中的HitResult
+		FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(Data.TargetData, i);
+		UE_LOG(LogTemp, Warning, TEXT("ActorName:  %s"), *HitResult.GetActor()->GetName());
 	}
 }

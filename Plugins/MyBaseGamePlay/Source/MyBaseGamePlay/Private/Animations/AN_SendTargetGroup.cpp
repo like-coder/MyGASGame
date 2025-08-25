@@ -21,6 +21,12 @@ void UAN_SendTargetGroup::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 	TSet<AActor*> HitActors;					// 记录已命中的Actor，避免重复
 	AActor* OwnerActor = MeshComp->GetOwner();
 
+	TArray<AActor*> IgnoredActors; // 忽略的Actor
+	if (bIgnoreOwner)
+	{
+		IgnoredActors.Add(OwnerActor);// 忽略自身
+	}
+
 	for (int32 i = 1; i < TargetSocketNames.Num(); i++)
 	{
 		// 获取攻击的前一个位置和当前位置
@@ -33,11 +39,6 @@ void UAN_SendTargetGroup::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 		TArray<FHitResult> HitResults; // 用于存储命中结果
 		const IGenericTeamAgentInterface* OwnerTeamInterface = Cast<IGenericTeamAgentInterface>(OwnerActor);
 
-		TArray<AActor*> IgnoredActors; // 忽略的Actor
-		if (bIgnoreOwner)
-		{
-			IgnoredActors.Add(OwnerActor);// 忽略自身
-		}
 		EDrawDebugTrace::Type DrawDebugTrace = bDrawDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
 
 		// 球形多重检测，查找路径上的所有目标

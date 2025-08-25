@@ -47,6 +47,11 @@ private:
 	 * 若条件不满足，则可能重置连击状态或忽略此次输入。
 	 */
 	void TryCommitCombo();
+
+	//处理接收伤害Tag的处理
+	UFUNCTION()
+	void DoDamage(FGameplayEventData Data);
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	TObjectPtr<UAnimMontage> ComboMontage;
