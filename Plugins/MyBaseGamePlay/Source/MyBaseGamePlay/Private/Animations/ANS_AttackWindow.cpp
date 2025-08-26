@@ -48,7 +48,15 @@ void UANS_AttackWindow::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequen
 
 	// 检查MeshComp有效性
 	if (!MeshComp)
+	{
 		return;
+	}
+
+	//判断AttackMesh和Locations
+	if (!AttackMesh.IsValid() && Locations.IsEmpty())
+	{
+		return;
+	}
 
 	// 检查拥有者和能力系统组件有效性
 	if (!MeshComp->GetOwner() || !UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(MeshComp->GetOwner()))
@@ -127,7 +135,6 @@ void UANS_AttackWindow::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenc
 	Locations.Empty(0);
 	HitActors.Empty(0);
 
-	// 显式重置 Weak 指针，不知道加不加好，弱指针应该不用管吧，我叫ai给我弄了一坨出来
 	AttackMesh.Reset();
 	OwnerTeamInterface.Reset();
 }
