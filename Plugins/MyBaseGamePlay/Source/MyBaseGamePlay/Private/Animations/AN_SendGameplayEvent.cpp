@@ -8,16 +8,11 @@
 void UAN_SendGameplayEvent::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
-	if (!MeshComp->GetOwner())
-	{
-		return;
-	}
+
+	if (!MeshComp->GetOwner()) return;
 
 	UAbilitySystemComponent* OwnerASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(MeshComp->GetOwner());
-	if (!OwnerASC)
-	{
-		return;
-	}
+	if (!OwnerASC) return;
 
 	// 发送一个指定EventTag的空Gameplay事件给OwnerActor
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), EventTag, FGameplayEventData());

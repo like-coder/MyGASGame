@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -20,53 +20,53 @@ public:
 	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 private:
-	// ´¥·¢±¾µØGameplayCue£¨Èç²¥·ÅÃüÖĞÌØĞ§¡¢ÒôĞ§µÈ£©
+	// è§¦å‘æœ¬åœ°GameplayCueï¼ˆå¦‚æ’­æ”¾å‘½ä¸­ç‰¹æ•ˆã€éŸ³æ•ˆç­‰ï¼‰
 	void SendLocalGameplayCue(const FHitResult& HitResult) const;
 
 private:
-	// ´¥·¢µÄGameplayCue±êÇ©£¨ÈçÃüÖĞÌØĞ§¡¢ÒôĞ§µÈ£©
+	// è§¦å‘çš„GameplayCueæ ‡ç­¾ï¼ˆå¦‚å‘½ä¸­ç‰¹æ•ˆã€éŸ³æ•ˆç­‰ï¼‰
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
 	FGameplayTagContainer TriggerGameplayCueTags;
 
-	// Ä¿±êÕóÓª¹ıÂË£¨ÈçÖ»¹¥»÷µĞÈË£©
-	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "Ä¿±êÕóÓª"))
+	// ç›®æ ‡é˜µè¥è¿‡æ»¤ï¼ˆå¦‚åªæ”»å‡»æ•Œäººï¼‰
+	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "ç›®æ ‡é˜µè¥"))
 	TEnumAsByte<ETeamAttitude::Type> TargetTeam = ETeamAttitude::Hostile;
 
-	// ÇòĞÎ¼ì²â°ë¾¶
-	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "ÇòÌå°ë¾¶"))
+	// çƒå½¢æ£€æµ‹åŠå¾„
+	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "çƒä½“åŠå¾„"))
 	float SphereSweepRadius = 60.f;
 
-	// ÊÇ·ñ»æÖÆµ÷ÊÔ¹ì¼£
-	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "»æÖÆµ÷ÊÔ¹ì¼£"))
+	// æ˜¯å¦ç»˜åˆ¶è°ƒè¯•è½¨è¿¹
+	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "ç»˜åˆ¶è°ƒè¯•è½¨è¿¹"))
 	bool bDrawDebug = true;
 
-	// ÊÇ·ñºöÂÔ×Ô¼º
-	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "ºöÂÔ×ÔÉí"))
+	// æ˜¯å¦å¿½ç•¥è‡ªå·±
+	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "å¿½ç•¥è‡ªèº«"))
 	bool bIgnoreOwner = true;
 
-	// ÊÇ·ñÊ¹ÓÃÎäÆ÷,ÍòÒ»ÎÒÏëÍæµ¶ÁË
-	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "Ê¹ÓÃÎäÆ÷"))
+	// æ˜¯å¦ä½¿ç”¨æ­¦å™¨,ä¸‡ä¸€æˆ‘æƒ³ç©åˆ€äº†
+	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "ä½¿ç”¨æ­¦å™¨"))
 	bool bUseWeapon = false;
 
-	// ·¢ËÍµÄTag
+	// å‘é€çš„Tag
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
 	FGameplayTag EventTag;
 
-	// ¹Ç÷ÀÃû³Æ
+	// éª¨éª¼åç§°
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
 	TArray<FName> TargetSocketNames;
 
-	/*¶îÍâÌí¼Ó*/
-	// ¼ÇÂ¼Åö×²µãÇ°Ò»Ö¡µÄÎ»ÖÃ
+	/*é¢å¤–æ·»åŠ */
+	// è®°å½•ç¢°æ’ç‚¹å‰ä¸€å¸§çš„ä½ç½®
 	TArray<FVector> Locations;
-	// ×÷ÕßµÄSetËÆºõÓĞµã¹Ö£¬ËùÒÔ£¬`²»¹ÜÁË`ÉÏÃæÓĞµãÀÁµÃ¸ÄÁË
-	// Åö×²µ½µÄ Actor
+	// ä½œè€…çš„Setä¼¼ä¹æœ‰ç‚¹æ€ªï¼Œæ‰€ä»¥ï¼Œ`ä¸ç®¡äº†`ä¸Šé¢æœ‰ç‚¹æ‡’å¾—æ”¹äº†
+	// ç¢°æ’åˆ°çš„ Actor
 	TArray<TWeakObjectPtr<AActor>> HitActors;
 
-	// ºóĞø×öºÃµÄÁËÎäÆ÷¿ÉÒÔÓÃ½Ó¿Ú´«¹ıÀ´£¬castÒ²¿ÉÒÔ
-	// µ±Ç°¹¥»÷µÄÎäÆ÷, ÎÒ²»ÏëÒ»Ö±µ÷ÓÃÎäÆ÷×é¼şµÄ½Ó¿Ú
+	// åç»­åšå¥½çš„äº†æ­¦å™¨å¯ä»¥ç”¨æ¥å£ä¼ è¿‡æ¥ï¼Œcastä¹Ÿå¯ä»¥
+	// å½“å‰æ”»å‡»çš„æ­¦å™¨, æˆ‘ä¸æƒ³ä¸€ç›´è°ƒç”¨æ­¦å™¨ç»„ä»¶çš„æ¥å£
 	mutable TWeakObjectPtr<USkeletalMeshComponent> AttackMesh;
 
-	// ÕóÈİ´¦»áÓÃµ½
+	// é˜µå®¹å¤„ä¼šç”¨åˆ°
 	mutable TWeakInterfacePtr<IGenericTeamAgentInterface> OwnerTeamInterface;
 };

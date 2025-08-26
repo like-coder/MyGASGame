@@ -65,11 +65,11 @@ void UANS_AttackWindow::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequen
 		IgnoredActors.Add(OwnerActor);			// 忽略自身
 	}
 
-	for (int32 i = 1; i < Locations.Num(); i++)
+	for (int32 i = 0; i < Locations.Num(); ++i)
 	{
 		// 上一帧位置为起点，当前帧位置为终点
-		FVector StartLoc = Locations[i];
-		FVector EndLoc = AttackMesh->GetSocketLocation(TargetSocketNames[i]);
+		FVector StartLocation = Locations[i];
+		FVector EndLocation = AttackMesh->GetSocketLocation(TargetSocketNames[i]);
 
 		// 设置检测对象类型为Pawn
 		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
@@ -77,10 +77,9 @@ void UANS_AttackWindow::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequen
 		TArray<FHitResult> HitResults; // 用于存储命中结果
 
 		EDrawDebugTrace::Type DrawDebugTrace = bDrawDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
-
-
 		// 球形多重检测，查找路径上的所有目标
-		UKismetSystemLibrary::SphereTraceMultiForObjects(MeshComp, StartLoc, EndLoc, SphereSweepRadius,
+		UKismetSystemLibrary::SphereTraceMultiForObjects(
+			MeshComp, StartLocation, EndLocation, SphereSweepRadius,
 			ObjectTypes, false, IgnoredActors, DrawDebugTrace, HitResults, false);
 
 		// 遍历所有命中结果
@@ -106,10 +105,13 @@ void UANS_AttackWindow::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequen
 			// 构造目标数据并加入事件数据
 			FGameplayAbilityTargetData_SingleTargetHit* TargetHit = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
 			Data.TargetData.Add(TargetHit);
+
+			// 触发本地GameplayCue（如特效、音效）
+			// SendLocalGameplayCue(HitResult);
 		}
 	}
 	// 向拥有者发送GameplayEvent，带上所有命中目标数据
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerActor, EventTag, Data);
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), EventTag, Data);
 
 	// 更新位置
 	for (int32 i = 0; i < TargetSocketNames.Num(); ++i)
@@ -139,6 +141,7 @@ void UANS_AttackWindow::SendLocalGameplayCue(const FHitResult& HitResult) const
 	// 遍历所有需要触发的GameplayCue标签
 	for (const FGameplayTag& GameplayCueTag : TriggerGameplayCueTags)
 	{
-		UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(HitResult.GetActor(), GameplayCueTag, EGameplayCueEvent::Executed, CueParam);
+		UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(
+			HitResult.GetActor(), GameplayCueTag, EGameplayCueEvent::Executed, CueParam);
 	}
 }

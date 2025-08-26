@@ -120,6 +120,28 @@ void UGA_Combo::DoDamage(FGameplayEventData Data)
 	{
 		// 获取每个命中的HitResult
 		FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(Data.TargetData, i);
-		UE_LOG(LogTemp, Warning, TEXT("ActorName:  %s"), *HitResult.GetActor()->GetName());
+		// 获取当前连招段的伤害效果
+		TSubclassOf<UGameplayEffect> GameplayEffect = GetDamageEffectForCurrentCombo();
+		// 对目标应用伤害
+		ApplyGameplayEffectToHitResultActor(HitResult, GameplayEffect, GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo));
+		//UE_LOG(LogTemp, Warning, TEXT("ActorName:  %s"), *HitResult.GetActor()->GetName());
 	}
+}
+
+TSubclassOf<UGameplayEffect> UGA_Combo::GetDamageEffectForCurrentCombo() const
+{
+	UAnimInstance* OwnerAnimInst = GetOwnerAnimInstance();
+	if (OwnerAnimInst)
+	{
+		// 获取当前片段名称
+		FName CurrentSectionName = OwnerAnimInst->Montage_GetCurrentSection(ComboMontage);
+		//获取当前片段对应的伤害效果
+		const TSubclassOf<UGameplayEffect>* FoundEffectPtr = DamageEffectMap.Find(CurrentSectionName);
+		if (FoundEffectPtr)
+		{
+			return *FoundEffectPtr;
+		}
+	}
+	// 没有特殊配置则用默认伤害
+	return DefaultDamageEffect;
 }

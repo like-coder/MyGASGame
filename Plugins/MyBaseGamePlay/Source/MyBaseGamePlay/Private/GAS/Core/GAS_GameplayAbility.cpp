@@ -3,6 +3,7 @@
 
 #include "GAS/Core/GAS_GameplayAbility.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 UAnimInstance* UGAS_GameplayAbility::GetOwnerAnimInstance() const
 {
@@ -73,4 +74,22 @@ TArray<FHitResult> UGAS_GameplayAbility::GetHitResultFromSweepLocationTargetData
 	}
 
 	return OutResults; // 返回所有有效命中结果
+}
+
+void UGAS_GameplayAbility::ApplyGameplayEffectToHitResultActor(const FHitResult& HitResult, TSubclassOf<UGameplayEffect> GameplayEffect, int Level)
+{
+	// 创建一个传出游戏效果规范句柄，包含指定的GameplayEffect和等级
+	FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(GameplayEffect, Level);
+
+	// 创建一个游戏效果上下文句柄，包含当前能力规范句柄和当前Actor信息
+	FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
+
+	// 向上下文中添加命中结果信息
+	EffectContextHandle.AddHitResult(HitResult);
+
+	// 将上下文设置到效果规范数据中
+	EffectSpecHandle.Data->SetContext(EffectContextHandle);
+
+	ApplyGameplayEffectSpecToTarget(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(),
+		GetCurrentActivationInfo(), EffectSpecHandle, UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(HitResult.GetActor()));
 }

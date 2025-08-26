@@ -52,10 +52,20 @@ private:
 	UFUNCTION()
 	void DoDamage(FGameplayEventData Data);
 
+	// 获取当前连击的伤害效果
+	TSubclassOf<UGameplayEffect> GetDamageEffectForCurrentCombo() const;
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	TObjectPtr<UAnimMontage> ComboMontage;
 
 	// 存储下一段combo名称
 	FName NextComboName;
+
+	// 默认伤害效果类
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effect")
+	TSubclassOf<UGameplayEffect> DefaultDamageEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effect")
+	TMap<FName, TSubclassOf<UGameplayEffect>> DamageEffectMap;
 };
