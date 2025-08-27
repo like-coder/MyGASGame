@@ -1,30 +1,34 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Character/GAS_Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "GAS/Core/TGameplayTags.h"
 
 // Sets default values
 AGAS_Character::AGAS_Character()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	//¿ªÆô¸´ÖÆ
+	//å¼€å¯å¤åˆ¶
 	bReplicates = true;
-	// ½ûÓÃÍø¸ñµÄÅö×²¹¦ÄÜ
+	// ç¦ç”¨ç½‘æ ¼çš„ç¢°æ’åŠŸèƒ½
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	GAS_AbilitySystemComponent = CreateDefaultSubobject<UGAS_AbilitySystemComponent>(TEXT("GAS_AbilitySystemComponent"));
 	GAS_AttributeSet = CreateDefaultSubobject<UGAS_AttributeSet>(TEXT("GAS_AttributeSet"));
 
-	//Ìí¼ÓÍ·²¿µÄÑªÌõUI
+	//æ·»åŠ å¤´éƒ¨çš„è¡€æ¡UI
 	OverHeadWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverHeadWidgetComponent"));
 	OverHeadWidgetComponent->SetupAttachment(GetRootComponent());
+
+	// ç»‘å®šGASå±æ€§æ”¹å˜å§”æ‰˜
+	BindGASChangeDelegates();
 }
 
 void AGAS_Character::ServerSideInit()
 {
-	// ÉèÖÃµ±Ç°½ÇÉ«×÷ÎªOwnerºÍAvatar£¬ÓÃÓÚºóĞøµÄÄÜÁ¦ºÍĞ§¹ûÓ¦ÓÃ
+	// è®¾ç½®å½“å‰è§’è‰²ä½œä¸ºOwnerå’ŒAvatarï¼Œç”¨äºåç»­çš„èƒ½åŠ›å’Œæ•ˆæœåº”ç”¨
 	GAS_AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	GAS_AbilitySystemComponent->ApplyInitialEffects();
 	GAS_AbilitySystemComponent->GiveInitialAbilities();
@@ -32,7 +36,7 @@ void AGAS_Character::ServerSideInit()
 
 void AGAS_Character::ClientSideInit()
 {
-	// ÉèÖÃµ±Ç°½ÇÉ«×÷ÎªOwnerºÍAvatar£¬ÓÃÓÚºóĞøµÄÄÜÁ¦ºÍĞ§¹ûÓ¦ÓÃ
+	// è®¾ç½®å½“å‰è§’è‰²ä½œä¸ºOwnerå’ŒAvatarï¼Œç”¨äºåç»­çš„èƒ½åŠ›å’Œæ•ˆæœåº”ç”¨
 	GAS_AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
@@ -71,6 +75,28 @@ UAbilitySystemComponent* AGAS_Character::GetAbilitySystemComponent() const
 	return GAS_AbilitySystemComponent;
 }
 
+void AGAS_Character::BindGASChangeDelegates()
+{
+	if (GAS_AbilitySystemComponent)
+	{
+		//å…è®¸ä¸ºæ–°å¢æˆ–ç§»é™¤çš„ç‰¹å®šGameplayTagæ³¨å†Œäº‹ä»¶
+		GAS_AbilitySystemComponent->RegisterGameplayTagEvent(TGameplayTags::Stats_Dead).AddUObject(this, &AGAS_Character::DeathTagUpdated);
+	}
+}
+
+void AGAS_Character::DeathTagUpdated(const FGameplayTag Tag, int32 NewCount)
+{
+	// æ ‡ç­¾æ•°é‡ä¸ä¸º0æ—¶ï¼Œæ­»äº¡ã€‚ä¸º0åˆ™å¤æ´»ã€‚
+	if (NewCount != 0)
+	{
+		StartDeathSequence();
+	}
+	else
+	{
+		Respawn();
+	}
+}
+
 bool AGAS_Character::IsLocallyControlledByPlayer() const
 {
 	return GetController() && GetController()->IsLocalPlayerController();
@@ -83,27 +109,27 @@ void AGAS_Character::ConfigureOverHeadStatusWidget()
 		return;
 	}
 
-	// Èç¹û½ÇÉ«ÓÉ±¾µØÍæ¼Ò¿ØÖÆ
+	// å¦‚æœè§’è‰²ç”±æœ¬åœ°ç©å®¶æ§åˆ¶
 	if (IsLocallyControlledByPlayer())
 	{
-		// Òş²ØÍ·¶¥UI×é¼ş
+		// éšè—å¤´é¡¶UIç»„ä»¶
 		OverHeadWidgetComponent->SetHiddenInGame(true);
 		return;
 	}
 
-	// ½«Í·¶¥UI×é¼şµÄÓÃ»§¿Ø¼ş¶ÔÏó×ª»»ÎªUOverHeadStatsGaugeÀàĞÍ
+	// å°†å¤´é¡¶UIç»„ä»¶çš„ç”¨æˆ·æ§ä»¶å¯¹è±¡è½¬æ¢ä¸ºUOverHeadStatsGaugeç±»å‹
 	UOverHeadStatsGauge* OverHeadStatsGauge = Cast<UOverHeadStatsGauge>(OverHeadWidgetComponent->GetUserWidgetObject());
 	if (OverHeadStatsGauge)
 	{
-		// Ê¹ÓÃÄÜÁ¦ÏµÍ³×é¼şÅäÖÃÍ·¶¥Í³¼ÆÁ¿±í
+		// ä½¿ç”¨èƒ½åŠ›ç³»ç»Ÿç»„ä»¶é…ç½®å¤´é¡¶ç»Ÿè®¡é‡è¡¨
 		ConfigureWithASC(GetAbilitySystemComponent(), OverHeadStatsGauge);
-		// ÏÔÊ¾Í·¶¥UI×é¼ş
+		// æ˜¾ç¤ºå¤´é¡¶UIç»„ä»¶
 		OverHeadWidgetComponent->SetHiddenInGame(false);
 
-		// Çå³ıÖ®Ç°µÄ¶¨Ê±Æ÷,·ÀÖ¹ÖØ¸´µ÷ÓÃ
+		// æ¸…é™¤ä¹‹å‰çš„å®šæ—¶å™¨,é˜²æ­¢é‡å¤è°ƒç”¨
 		GetWorldTimerManager().ClearTimer(HeadStatGaugeVisibilityUpdateTimerHandle);
-		// ÉèÖÃĞÂµÄ¶¨Ê±Æ÷£¬ÖÜÆÚĞÔµ÷ÓÃ UpdateHeadGaugeVisibility ·½·¨
-		// ÓÃÓÚ³ÖĞø¼ì²â½ÇÉ«ÓëÍæ¼ÒÖ®¼äµÄ¾àÀë²¢¸üĞÂÍ·¶¥UI¿É¼ûĞÔ×´Ì¬
+		// è®¾ç½®æ–°çš„å®šæ—¶å™¨ï¼Œå‘¨æœŸæ€§è°ƒç”¨ UpdateHeadGaugeVisibility æ–¹æ³•
+		// ç”¨äºæŒç»­æ£€æµ‹è§’è‰²ä¸ç©å®¶ä¹‹é—´çš„è·ç¦»å¹¶æ›´æ–°å¤´é¡¶UIå¯è§æ€§çŠ¶æ€
 		GetWorldTimerManager().SetTimer(HeadStatGaugeVisibilityUpdateTimerHandle, 
 			this, &AGAS_Character::UpdateHeadGaugeVisibility,
 			HeadStatGaugeVisibilityCheckUpdateGap, true);
@@ -119,17 +145,53 @@ void AGAS_Character::ConfigureWithASC(UAbilitySystemComponent* AbilitySystemComp
 	}
 }
 
-// ¶¨Ê±Æ÷µ÷ÓÃµÄ¸üĞÂº¯ÊıµÄÊµÏÖ
+// å®šæ—¶å™¨è°ƒç”¨çš„æ›´æ–°å‡½æ•°çš„å®ç°
 void AGAS_Character::UpdateHeadGaugeVisibility()
 {
-	// »ñÈ¡±¾µØÍæ¼ÒµÄPawn½ÇÉ«£¬ÓÃÓÚ¼ÆËãÓëµ±Ç°½ÇÉ«µÄ¾àÀë
+	// è·å–æœ¬åœ°ç©å®¶çš„Pawnè§’è‰²ï¼Œç”¨äºè®¡ç®—ä¸å½“å‰è§’è‰²çš„è·ç¦»
 	APawn* LocalPlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
 	if (LocalPlayerPawn)
 	{
-		// ¼ÆËãµ±Ç°½ÇÉ«Óë±¾µØÍæ¼ÒÖ®¼äµÄÆ½·½¾àÀë
+		// è®¡ç®—å½“å‰è§’è‰²ä¸æœ¬åœ°ç©å®¶ä¹‹é—´çš„å¹³æ–¹è·ç¦»
 		float DistSquared = FVector::DistSquared(GetActorLocation(), LocalPlayerPawn->GetActorLocation());
-		// Èç¹û¾àÀë³¬¹ıÉè¶¨µÄ¿É¼û·¶Î§£¬ÔòÒş²ØÍ·¶¥×´Ì¬Ìõ×é¼ş
+		// å¦‚æœè·ç¦»è¶…è¿‡è®¾å®šçš„å¯è§èŒƒå›´ï¼Œåˆ™éšè—å¤´é¡¶çŠ¶æ€æ¡ç»„ä»¶
 		OverHeadWidgetComponent->SetHiddenInGame(DistSquared > HeadStatGaugeVisibilityRangeSquared);
 	}
 }
 
+void AGAS_Character::SetStatusGaugeEnabled(bool bIsEnabled)
+{
+	if (!OverHeadWidgetComponent)
+	{
+		return;
+	}
+
+	GetWorldTimerManager().ClearTimer(HeadStatGaugeVisibilityUpdateTimerHandle);
+	if (bIsEnabled)
+	{
+		ConfigureOverHeadStatusWidget();
+	}
+	else
+	{
+		// å…³é—­å¤´é¡¶è¡€æ¡
+		OverHeadWidgetComponent->SetHiddenInGame(true);
+	}
+}
+
+void AGAS_Character::PlayDeathAnimation()
+{
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+	}
+}
+
+void AGAS_Character::StartDeathSequence()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%sï¼šæš´æ¯™"), *GetName())
+}
+
+void AGAS_Character::Respawn()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%sï¼šé‡ç”Ÿ"), *GetName())
+}

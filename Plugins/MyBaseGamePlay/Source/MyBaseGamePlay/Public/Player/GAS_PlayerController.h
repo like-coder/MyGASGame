@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -16,9 +16,9 @@ class MYBASEGAMEPLAY_API AGAS_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
-	// Íæ¼Ò¿ØÖÆÆ÷¿ØÖÆÒ»¸öPawnÊ±µ÷ÓÃ£¨¸Ãº¯Êı½öÔÚ·şÎñÆ÷ÖĞµ÷ÓÃ£©
+	// ç©å®¶æ§åˆ¶å™¨æ§åˆ¶ä¸€ä¸ªPawnæ—¶è°ƒç”¨ï¼ˆè¯¥å‡½æ•°ä»…åœ¨æœåŠ¡å™¨ä¸­è°ƒç”¨ï¼‰
 	virtual void OnPossess(APawn* NewPawn) override;
-	// Íæ¼Ò¿ØÖÆÆ÷¿ØÖÆÒ»¸öPawnÊ±µ÷ÓÃ£¨¸Ãº¯Êı½öÔÚ¿Í»§¶ËÖĞµ÷ÓÃ£©
+	// ç©å®¶æ§åˆ¶å™¨æ§åˆ¶ä¸€ä¸ªPawnæ—¶è°ƒç”¨ï¼ˆè¯¥å‡½æ•°ä»…åœ¨å®¢æˆ·ç«¯ä¸­è°ƒç”¨ï¼‰
 	virtual void AcknowledgePossession(APawn* P) override;
 
 private:
