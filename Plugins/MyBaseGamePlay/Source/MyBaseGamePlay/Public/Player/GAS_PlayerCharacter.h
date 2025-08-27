@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -18,25 +18,25 @@ public:
 	AGAS_PlayerCharacter();
 
 	/**
-	 * ÔÚ¿Í»§¶ËÖØĞÂ¿ªÊ¼Ê±µ÷ÓÃ
-	 * ÓÃÓÚ´¦ÀíÍæ¼Ò½ÇÉ«µÄÖØÉú»ò³õÊ¼»¯Âß¼­
+	 * åœ¨å®¢æˆ·ç«¯é‡æ–°å¼€å§‹æ—¶è°ƒç”¨
+	 * ç”¨äºå¤„ç†ç©å®¶è§’è‰²çš„é‡ç”Ÿæˆ–åˆå§‹åŒ–é€»è¾‘
 	 */
 	virtual void PawnClientRestart() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 private:
 	/*************************Input**************************/
-	// ¿´µÄ°ó¶¨º¯Êı
+	// çœ‹çš„ç»‘å®šå‡½æ•°
 	void HandleLookInput(const FInputActionValue& InputActionValue);
-	// ÒÆ¶¯µÄ°ó¶¨º¯Êı
+	// ç§»åŠ¨çš„ç»‘å®šå‡½æ•°
 	void HandleMoveInput(const FInputActionValue& InputActionValue);
-	// ¼¼ÄÜµÄ°ó¶¨º¯Êı
+	// æŠ€èƒ½çš„ç»‘å®šå‡½æ•°
 	void HandleAbilityInput(const FInputActionValue& InputActionValue, ECAbilityInputID InputID);
-	// »ñÈ¡½ÇÉ«ÊÓÏßÓÒ²àµÄ·½ÏòÏòÁ¿
+	// è·å–è§’è‰²è§†çº¿å³ä¾§çš„æ–¹å‘å‘é‡
 	FVector GetLookRightDir() const;
-	// »ñÈ¡½ÇÉ«ÊÓÏßÏòÇ°µÄ·½ÏòÏòÁ¿
+	// è·å–è§’è‰²è§†çº¿å‘å‰çš„æ–¹å‘å‘é‡
 	FVector GetLookFwdDir() const;
-	// ¼ÆËã½ÇÉ«ÏòÇ°ÒÆ¶¯µÄ·½ÏòÏòÁ¿
+	// è®¡ç®—è§’è‰²å‘å‰ç§»åŠ¨çš„æ–¹å‘å‘é‡
 	FVector GetMoveFwdDir() const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -48,11 +48,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<class UInputAction> MoveInputAction;
 
-	// ¼¼ÄÜÊäÈë
+	// æŠ€èƒ½è¾“å…¥
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TMap<ECAbilityInputID, TObjectPtr<UInputAction>> GameplayAbilityInputActions;
 
-	// ¹ÜÀíÓÎÏ·ÊäÈëÓ³ÉäÉÏÏÂÎÄ
+	// ç®¡ç†æ¸¸æˆè¾“å…¥æ˜ å°„ä¸Šä¸‹æ–‡
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<class UInputMappingContext> GameplayInputMappingContext;
 

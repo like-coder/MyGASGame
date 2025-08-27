@@ -46,17 +46,44 @@ public:
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+private:
+	// 绑定GAS属性改变委托
+	void BindGASChangeDelegates();
+	// 死亡标签更新(NewCount为标签数量)
+	void DeathTagUpdated(const FGameplayTag Tag, int32 NewCount);
+
+//死亡和复活 (Death and Respawn)
+private:
+	// 播放死亡动画
+	void PlayDeathAnimation();
+	// 死亡
+	void StartDeathSequence();
+	// 复活
+	void Respawn();
+	// 子类中实现
+	virtual void OnDead() {}
+	virtual void OnRespawn() {}
+
+	// 死亡蒙太奇
+	UPROPERTY(EditDefaultsOnly, Category = "Death")
+	TObjectPtr<UAnimMontage> DeathMontage;
+
 //UI相关组件
 private:
 	void ConfigureOverHeadStatusWidget();
 	void ConfigureWithASC(UAbilitySystemComponent* AbilitySystemComponent, UOverHeadStatsGauge* OverHeadStatsGauge);
-
 	/**
 	 * @brief 更新头顶状态条可见性\n
 	 * 根据玩家与角色之间的距离判断是否启用头顶UI组件的显示。\n
 	 * 该方法通过定时器周期性调用。
 	 */
 	void UpdateHeadGaugeVisibility();
+	/**
+	 * @brief 设置头顶状态条的启用状态\n
+	 * 启用或禁用头顶UI组件的显示。\n
+	 * @param bIsEnabled 是否启用头顶UI
+	 */
+	void SetStatusGaugeEnabled(bool bIsEnabled);
 	// 头顶UI
 	UPROPERTY(VisibleDefaultsOnly, Category = "UI")
 	TObjectPtr<UWidgetComponent> OverHeadWidgetComponent;
