@@ -23,11 +23,11 @@ public:
 	void GiveInitialAbilities();
 	// 服务端添加GE
 	void AuthApplyGameplayEffect(TSubclassOf<UGameplayEffect> GameplayEffect, int Level = 1);
+	// 回满血、满蓝效果
+	void ApplyFullStatEffect();
 
 private:
 	void HealthUpdated(const FOnAttributeChangeData& ChangeData);
-	// 回满血、满蓝效果
-	void ApplyFullStatEffect();
 
 private:
 	// 初始化属性效果
