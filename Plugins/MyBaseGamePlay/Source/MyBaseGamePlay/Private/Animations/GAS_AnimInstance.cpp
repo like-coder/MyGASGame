@@ -25,6 +25,7 @@ void UGAS_AnimInstance::NativeInitializeAnimation()
 
 void UGAS_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
+	Super::NativeUpdateAnimation(DeltaSeconds);
 	if (OwnerCharacter)
 	{
 		FVector Velocity = OwnerCharacter->GetVelocity();

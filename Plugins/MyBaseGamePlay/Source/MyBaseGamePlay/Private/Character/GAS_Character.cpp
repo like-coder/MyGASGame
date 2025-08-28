@@ -4,6 +4,8 @@
 #include "Character/GAS_Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "GAS/Core/TGameplayTags.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AGAS_Character::AGAS_Character()
@@ -188,10 +190,30 @@ void AGAS_Character::PlayDeathAnimation()
 
 void AGAS_Character::StartDeathSequence()
 {
+	OnDead();
+	//播放死亡动画
+	PlayDeathAnimation();
+	// 关闭头顶血条
+	SetStatusGaugeEnabled(false);
+	// 禁用移动
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	// 禁用碰撞
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	UE_LOG(LogTemp, Warning, TEXT("%s：暴毙"), *GetName())
 }
 
 void AGAS_Character::Respawn()
 {
+	OnRespawn();
+	SetStatusGaugeEnabled(true);
+	// 开启移动
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	//开启碰撞
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
+	if (GAS_AbilitySystemComponent)
+	{
+		GAS_AbilitySystemComponent->ApplyFullStatEffect();
+	}
 	UE_LOG(LogTemp, Warning, TEXT("%s：重生"), *GetName())
 }
