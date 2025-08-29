@@ -24,8 +24,15 @@ public:
 	virtual void PawnClientRestart() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+protected:
+	//死亡和复活 (Death and Respawn)
+	virtual void OnDead() override;
+	virtual void OnRespawn() override;
+
 private:
 	/*************************Input**************************/
+	// 输入开关
+	void SetInputEnabledFromPlayerController(bool bEnabled);
 	// 看的绑定函数
 	void HandleLookInput(const FInputActionValue& InputActionValue);
 	// 移动的绑定函数
