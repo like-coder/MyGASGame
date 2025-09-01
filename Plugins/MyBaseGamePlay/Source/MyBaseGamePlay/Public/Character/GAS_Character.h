@@ -54,6 +54,10 @@ private:
 
 //死亡和复活 (Death and Respawn)
 private:
+	// 死亡蒙太奇完成处理
+	void DeathMontageFinished();
+	// 启用/禁用 布娃娃系统
+	void SetRagdollEnabled(bool bIsEnabled);
 	// 播放死亡动画
 	void PlayDeathAnimation();
 	// 死亡
@@ -64,9 +68,17 @@ private:
 	virtual void OnDead() {}
 	virtual void OnRespawn() {}
 
+	// 相对于网格的变换
+	FTransform MeshRelativeTransform;
+	// 死亡蒙太奇完成时间偏移
+	UPROPERTY(EditDefaultsOnly, Category = "Death")
+	float DeathMontageFinishTimeShift = -0.8f;
 	// 死亡蒙太奇
 	UPROPERTY(EditDefaultsOnly, Category = "Death")
 	TObjectPtr<UAnimMontage> DeathMontage;
+
+	//死亡蒙太奇计时器句柄
+	FTimerHandle DeathMontageTimerHandle;
 
 //UI相关组件
 private:

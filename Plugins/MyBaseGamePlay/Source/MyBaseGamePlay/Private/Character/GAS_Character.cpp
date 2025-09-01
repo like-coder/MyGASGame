@@ -56,6 +56,8 @@ void AGAS_Character::BeginPlay()
 {
 	Super::BeginPlay();
 	ConfigureOverHeadStatusWidget();
+
+	MeshRelativeTransform = GetMesh()->GetRelativeTransform();
 }
 
 // Called every frame
@@ -180,11 +182,35 @@ void AGAS_Character::SetStatusGaugeEnabled(bool bIsEnabled)
 	}
 }
 
+void AGAS_Character::DeathMontageFinished()
+{
+	SetRagdollEnabled(true);
+}
+
+void AGAS_Character::SetRagdollEnabled(bool bIsEnabled)
+{
+	if (bIsEnabled)
+	{
+		GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);// 从父组件分离网格，但保持世界变换不变
+		GetMesh()->SetSimulatePhysics(true); // 启用物理模拟
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly); // 仅启用物理碰撞
+	}
+	else
+	{
+		GetMesh()->SetSimulatePhysics(false); // 禁用物理模拟
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 禁用碰撞
+		GetMesh()->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		GetMesh()->SetRelativeTransform(MeshRelativeTransform);
+	}
+}
+
 void AGAS_Character::PlayDeathAnimation()
 {
 	if (DeathMontage)
 	{
-		PlayAnimMontage(DeathMontage);
+		// 获取死亡蒙太奇的持续时间
+		float MontageDuration = PlayAnimMontage(DeathMontage);
+		GetWorldTimerManager().SetTimer(DeathMontageTimerHandle, this, &AGAS_Character::DeathMontageFinished, MontageDuration + DeathMontageFinishTimeShift);
 	}
 }
 
@@ -205,10 +231,13 @@ void AGAS_Character::StartDeathSequence()
 void AGAS_Character::Respawn()
 {
 	OnRespawn();
+	// 关闭布娃娃
+	SetRagdollEnabled(false);
+	// 开启血条
 	SetStatusGaugeEnabled(true);
 	// 开启移动
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	//开启碰撞
+	// 开启碰撞
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
 	if (GAS_AbilitySystemComponent)

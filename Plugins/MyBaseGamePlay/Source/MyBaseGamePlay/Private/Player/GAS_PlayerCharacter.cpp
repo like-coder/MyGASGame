@@ -63,6 +63,38 @@ void AGAS_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	}
 }
 
+void AGAS_PlayerCharacter::OnDead()
+{
+	SetInputEnabledFromPlayerController(false);
+}
+
+void AGAS_PlayerCharacter::OnRespawn()
+{
+	SetInputEnabledFromPlayerController(true);
+}
+
+void AGAS_PlayerCharacter::SetInputEnabledFromPlayerController(bool bEnabled)
+{
+	// 获取玩家控制器
+	APlayerController* PlayerController = GetController<APlayerController>();
+	// 如果玩家控制器为空，则返回
+	if (!PlayerController)
+	{
+		return;
+	}
+
+	if (bEnabled)
+	{
+		// 启用玩家控制器输入
+		EnableInput(PlayerController);
+	}
+	else
+	{
+		// 禁用玩家控制器输入
+		DisableInput(PlayerController);
+	}
+}
+
 void AGAS_PlayerCharacter::HandleLookInput(const FInputActionValue& InputActionValue)
 {
 	// 将输入值从FVector2D转换为FVector2D类型
