@@ -225,6 +225,7 @@ void AGAS_Character::StartDeathSequence()
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	// 禁用碰撞
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	UE_LOG(LogTemp, Warning, TEXT("%s：暴毙"), *GetName())
 }
 
