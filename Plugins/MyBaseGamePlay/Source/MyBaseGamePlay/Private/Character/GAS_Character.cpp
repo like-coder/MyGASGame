@@ -6,6 +6,7 @@
 #include "GAS/Core/TGameplayTags.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AGAS_Character::AGAS_Character()
@@ -246,4 +247,25 @@ void AGAS_Character::Respawn()
 		GAS_AbilitySystemComponent->ApplyFullStatEffect();
 	}
 	UE_LOG(LogTemp, Warning, TEXT("%s：重生"), *GetName())
+}
+
+void AGAS_Character::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	//将团队ID属性复制到所有的客户端
+	DOREPLIFETIME(AGAS_Character, TeamID);
+}
+
+void AGAS_Character::SetGenericTeamId(const FGenericTeamId& NewTeamID)
+{
+	TeamID = NewTeamID;
+}
+
+FGenericTeamId AGAS_Character::GetGenericTeamId() const
+{
+	return TeamID;
+}
+
+void AGAS_Character::OnRep_TeamID()
+{
 }

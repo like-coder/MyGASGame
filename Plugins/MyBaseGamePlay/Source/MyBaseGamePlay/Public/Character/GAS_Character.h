@@ -32,6 +32,22 @@ public:
 	// 判断该角色是否由本地玩家控制
 	bool IsLocallyControlledByPlayer() const;
 
+//团队(Team)
+public:
+	// 判断当前对象对另一个对象的态度
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	// 设置团队ID
+	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override;
+	// 获取团队ID
+	virtual FGenericTeamId GetGenericTeamId() const override;
+
+private:
+	UFUNCTION()
+	virtual void OnRep_TeamID();
+
+	UPROPERTY(ReplicatedUsing = OnRep_TeamID)
+	FGenericTeamId TeamID;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
