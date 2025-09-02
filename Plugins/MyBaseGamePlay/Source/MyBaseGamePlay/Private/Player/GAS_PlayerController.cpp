@@ -3,6 +3,7 @@
 
 #include "Player/GAS_PlayerController.h"
 #include "GAS/GAS_AttributeSet.h"
+#include "Net/UnrealNetwork.h"
 
 void AGAS_PlayerController::OnPossess(APawn* NewPawn)
 {
@@ -11,6 +12,7 @@ void AGAS_PlayerController::OnPossess(APawn* NewPawn)
 	if (GAS_PlayerCharacter)
 	{
 		GAS_PlayerCharacter->ServerSideInit();
+		GAS_PlayerCharacter->SetGenericTeamId(TeamID);
 	}
 }
 
@@ -25,6 +27,23 @@ void AGAS_PlayerController::AcknowledgePossession(APawn* P)
 		//创建UI
 		SpawnGameplayWidget();
 	}
+}
+
+void AGAS_PlayerController::SetGenericTeamId(const FGenericTeamId& NewTeamID)
+{
+	TeamID = NewTeamID;
+}
+
+FGenericTeamId AGAS_PlayerController::GetGenericTeamId() const
+{
+	return TeamID;
+}
+
+void AGAS_PlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	//将团队ID属性复制到所有的客户端
+	DOREPLIFETIME(AGAS_PlayerController, TeamID);
 }
 
 void AGAS_PlayerController::SetAndBoundToGameplayAttributes()

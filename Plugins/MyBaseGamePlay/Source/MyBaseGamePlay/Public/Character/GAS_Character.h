@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h" // IAbilitySystemInterface接口的头文件
+#include "GenericTeamAgentInterface.h"
 #include "Components/WidgetComponent.h"
 #include "Gameplay/OverHeadStatsGauge.h"
 #include "GAS/GAS_AbilitySystemComponent.h"
@@ -12,7 +13,7 @@
 #include "GAS_Character.generated.h"
 
 UCLASS()
-class MYBASEGAMEPLAY_API AGAS_Character : public ACharacter, public IAbilitySystemInterface
+class MYBASEGAMEPLAY_API AGAS_Character : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 

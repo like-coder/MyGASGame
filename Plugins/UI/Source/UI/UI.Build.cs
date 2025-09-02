@@ -43,6 +43,7 @@ public class UI : ModuleRules
                 "GameplayAbilities",
                 "GameplayTags",
                 "GameplayTasks",
+                "AIModule"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
