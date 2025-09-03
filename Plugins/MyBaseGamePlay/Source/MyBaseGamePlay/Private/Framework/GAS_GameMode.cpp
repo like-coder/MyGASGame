@@ -42,7 +42,7 @@ AActor* AGAS_GameMode::FindNextStartSpotForTeam(const FGenericTeamId& TeamID) co
         if (it->PlayerStartTag == TeamStartSpotTagMap[TeamID])
         {
             // Taken表示将重生点标记占用
-            it->PlayerStartTag == FName("Taken");
+            it->PlayerStartTag = FName("Taken");
             // 返回找到的重生点
             return *it;
         }

@@ -83,7 +83,7 @@ private:
 	void Respawn();
 	// 子类中实现
 	virtual void OnDead() {}
-	virtual void OnRespawn() {}
+	virtual void OnRespawn();
 
 	// 相对于网格的变换
 	FTransform MeshRelativeTransform;

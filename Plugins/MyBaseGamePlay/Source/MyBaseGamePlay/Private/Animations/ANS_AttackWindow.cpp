@@ -100,15 +100,15 @@ void UANS_AttackWindow::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequen
 				continue;
 			}
 			HitActors.AddUnique(HitActor);
-
-			// 检查目标阵营关系（如只攻击敌人）
-			// if (OwnerTeamInterface.IsValid())
-			// {
-			// 	if (OwnerTeamInterface->GetTeamAttitudeTowards(*HitResult.GetActor()) != TargetTeam)
-			// 	{
-			// 		continue;
-			// 	}
-			// }
+			// TODO: 处理阵容
+			//检查目标阵营关系（如只攻击敌人）
+			if (OwnerTeamInterface.IsValid())
+			{
+				 if (OwnerTeamInterface->GetTeamAttitudeTowards(*HitResult.GetActor()) != TargetTeam)
+				 {
+			 		continue;
+				 }
+			}
 
 			// 构造目标数据并加入事件数据
 			FGameplayAbilityTargetData_SingleTargetHit* TargetHit = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
@@ -119,7 +119,7 @@ void UANS_AttackWindow::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequen
 		}
 	}
 	// 向拥有者发送GameplayEvent，带上所有命中目标数据
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), EventTag, Data);
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerActor, EventTag, Data);
 
 	// 更新位置
 	for (int32 i = 0; i < TargetSocketNames.Num(); ++i)

@@ -249,6 +249,22 @@ void AGAS_Character::Respawn()
 	UE_LOG(LogTemp, Warning, TEXT("%s：重生"), *GetName())
 }
 
+void AGAS_Character::OnRespawn()
+{
+	// 如果当前对象具有网络权限并且控制器存在
+	if (HasAuthority() && GetController())
+	{
+		// 获取控制器的起始位置对象指针
+		TWeakObjectPtr<AActor> StartSpot = GetController()->StartSpot;
+
+		if (StartSpot.IsValid())
+		{
+			// 将当前对象的位置和姿态设置为起始位置对象的位置和姿态
+			SetActorTransform(StartSpot->GetActorTransform());
+		}
+	}
+}
+
 void AGAS_Character::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
