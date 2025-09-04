@@ -11,6 +11,16 @@ void UValueGauge::NativePreConstruct()
 	{
 		ProgressBar->SetFillColorAndOpacity(BarColor);
 	}
+
+	//if (ValueText)
+	//{
+	//	// 获取当前字体设置
+	//	FSlateFontInfo FontInfo = ValueText->GetFont();
+	//	// 更新字体大小
+	//	//FontInfo.Size = TextSize;
+	//	// 应用新的字体设置到文本组件
+	//	ValueText->SetFont(FontInfo);
+	//}
 }
 
 void UValueGauge::SetAndBoundToGameplayAttribute(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute, const FGameplayAttribute& MaxAttribute)
@@ -55,6 +65,13 @@ void UValueGauge::SetValue(const float NewValue, const float NewMaxValue)
 			FText::AsNumber(NewMaxValue, &FormatOps)     // 最大值
 		)
 	);
+}
+
+void UValueGauge::SetBarColor(FLinearColor NewBarColor)
+{
+	// 设置进度条颜色
+	BarColor = NewBarColor;
+	ProgressBar->SetFillColorAndOpacity(BarColor);
 }
 
 void UValueGauge::ValueChanged(const FOnAttributeChangeData& ChangeData)

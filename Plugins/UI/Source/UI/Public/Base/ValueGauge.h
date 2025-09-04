@@ -32,6 +32,8 @@ public:
 	 */
 	void SetAndBoundToGameplayAttribute(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute, const FGameplayAttribute& MaxAttribute);
 	void SetValue(float NewValue, float NewMaxValue);
+	//设置进度条颜色
+	void SetBarColor(FLinearColor NewBarColor);
 
 private:
 	// 回调用函数
@@ -46,6 +48,9 @@ private:
 	// 设置进度条的颜色
 	UPROPERTY(EditAnywhere, Category = "Visual")
 	FLinearColor BarColor;
+
+	UPROPERTY(EditAnywhere, Category = "Visual")
+	float TextSize = 10;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
 	TObjectPtr<UProgressBar> ProgressBar;

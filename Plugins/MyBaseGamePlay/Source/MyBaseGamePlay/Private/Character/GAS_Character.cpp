@@ -107,6 +107,7 @@ bool AGAS_Character::IsLocallyControlledByPlayer() const
 	return GetController() && GetController()->IsLocalPlayerController();
 }
 
+PRAGMA_DISABLE_OPTIMIZATION
 void AGAS_Character::ConfigureOverHeadStatusWidget()
 {
 	if (!OverHeadWidgetComponent)
@@ -128,6 +129,19 @@ void AGAS_Character::ConfigureOverHeadStatusWidget()
 	{
 		// 使用能力系统组件配置头顶统计量表
 		ConfigureWithASC(GetAbilitySystemComponent(), OverHeadStatsGauge);
+		// 获取到本地玩家角色
+		AGAS_Character* LocalPlayerPawn = Cast<AGAS_Character>(UGameplayStatics::GetPlayerPawn(this, 0));
+		if (LocalPlayerPawn && LocalPlayerPawn->GetClass()->ImplementsInterface(UGenericTeamAgentInterface::StaticClass()))
+		{
+			// 获取本地玩家角色的GenericTeamAgentInterface接口
+			const IGenericTeamAgentInterface* LocalTeamInterface = Cast<IGenericTeamAgentInterface>(LocalPlayerPawn);
+			if (LocalTeamInterface)
+			{
+				// 设置头顶UI组件的血条颜色
+				OverHeadStatsGauge->SetHealthBarColor(GetTeamAttitudeTowards(*LocalPlayerPawn));
+			}
+		}
+
 		// 显示头顶UI组件
 		OverHeadWidgetComponent->SetHiddenInGame(false);
 
@@ -140,6 +154,7 @@ void AGAS_Character::ConfigureOverHeadStatusWidget()
 			HeadStatGaugeVisibilityCheckUpdateGap, true);
 	}
 }
+PRAGMA_ENABLE_OPTIMIZATION
 
 void AGAS_Character::ConfigureWithASC(UAbilitySystemComponent* AbilitySystemComponent, UOverHeadStatsGauge* OverHeadStatsGauge)
 {
