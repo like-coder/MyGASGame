@@ -6,6 +6,8 @@
 #include "GAS/Core/TGameplayTags.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -27,6 +29,8 @@ AGAS_Character::AGAS_Character()
 
 	// 绑定GAS属性改变委托
 	BindGASChangeDelegates();
+	// 创建AI感知刺激源组件
+	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>("Perception Stimuli Source Component");
 }
 
 void AGAS_Character::ServerSideInit()
@@ -57,8 +61,9 @@ void AGAS_Character::BeginPlay()
 {
 	Super::BeginPlay();
 	ConfigureOverHeadStatusWidget();
-
 	MeshRelativeTransform = GetMesh()->GetRelativeTransform();
+	// 注册感知源
+	PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Sight::StaticClass());
 }
 
 // Called every frame
@@ -241,7 +246,8 @@ void AGAS_Character::StartDeathSequence()
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	// 禁用碰撞
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+	// 死掉后禁用感知
+	SetAIPerceptionStimuliSourceEnabled(false);
 	UE_LOG(LogTemp, Warning, TEXT("%s：暴毙"), *GetName())
 }
 
@@ -261,17 +267,22 @@ void AGAS_Character::Respawn()
 	{
 		GAS_AbilitySystemComponent->ApplyFullStatEffect();
 	}
+	// 在复活点复活
+	RespawnInLocation();
+	// 启用感知
+	SetAIPerceptionStimuliSourceEnabled(true);
 	UE_LOG(LogTemp, Warning, TEXT("%s：重生"), *GetName())
 }
 
-void AGAS_Character::OnRespawn()
+void AGAS_Character::RespawnInLocation()
 {
-	// 如果当前对象具有网络权限并且控制器存在
+	// 如果当前对象具有权限并且控制器存在
 	if (HasAuthority() && GetController())
 	{
 		// 获取控制器的起始位置对象指针
 		TWeakObjectPtr<AActor> StartSpot = GetController()->StartSpot;
 
+		// 检查起始位置对象是否有效
 		if (StartSpot.IsValid())
 		{
 			// 将当前对象的位置和姿态设置为起始位置对象的位置和姿态
@@ -299,4 +310,21 @@ FGenericTeamId AGAS_Character::GetGenericTeamId() const
 
 void AGAS_Character::OnRep_TeamID()
 {
+}
+
+void AGAS_Character::SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled)
+{
+	if (!PerceptionStimuliSourceComponent)
+	{
+		return;
+	}
+
+	if (bIsEnabled)
+	{
+		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
+	}
+	else
+	{
+		PerceptionStimuliSourceComponent->UnregisterFromPerceptionSystem();
+	}
 }

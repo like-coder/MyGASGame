@@ -2,6 +2,9 @@
 
 
 #include "AI/GAS_AIController.h"
+#include "GAS/Core/TGameplayTags.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 AGAS_AIController::AGAS_AIController()
 {
@@ -66,11 +69,8 @@ void AGAS_AIController::TargetPerceptionUpdated(AActor* TargetActor, FAIStimulus
 	}
 	else
 	{
-		//// 如果当前目标是感知到的目标，但感知不成功，则清除当前目标
-		//if (GetCurrentTarget() == TargetActor)
-		//{
-		//	SetCurrentTarget(nullptr);
-		//}
+		// 忘记已死亡的目标
+		ForgetActorIfDead(TargetActor);
 	}
 }
 
@@ -138,4 +138,34 @@ AActor* AGAS_AIController::GetNextPerceivedActor() const
 		}
 	}
 	return nullptr;
+}
+
+void AGAS_AIController::ForgetActorIfDead(AActor* ActorToForget)
+{
+	const UAbilitySystemComponent* ActorASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(ActorToForget);
+	if (!ActorASC)
+	{
+		return;
+	}
+
+	// 检测Actor是否具有死亡标签
+	if (ActorASC->HasMatchingGameplayTag(TGameplayTags::Stats_Dead))
+	{
+		// 遍历AI感知组件的感知数据容器
+		for (UAIPerceptionComponent::TActorPerceptionContainer::TIterator Iter = AIPerceptionComponent->GetPerceptualDataIterator(); Iter; ++Iter)
+		{
+			// 查找与目标Actor匹配的感知数据条目
+			if (Iter->Key == ActorToForget)
+			{
+				// 将感知刺激年龄设置为最大值，触发AI遗忘逻辑
+				// 这会使得该Actor从AI的感知列表中被移除
+				for (FAIStimulus& Stimuli : Iter->Value.LastSensedStimuli)
+				{
+					Stimuli.SetStimulusAge(TNumericLimits<float>::Max());
+				}
+				// 找到匹配项后跳出循环，避免不必要的遍历
+				break;
+			}
+		}
+	}
 }

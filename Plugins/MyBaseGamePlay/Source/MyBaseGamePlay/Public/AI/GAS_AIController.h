@@ -39,6 +39,8 @@ private:
 	void TargetForgotten(AActor* ForgottenActor);
 	// 获取下一个感知到的敌人（用于目标切换）
 	AActor* GetNextPerceivedActor() const;
+	// 如果目标已死亡，则忘记该目标（清理感知数据）
+	void ForgetActorIfDead(AActor* ActorToForget);
 
 private:
 	// AI感知组件（用于感知敌人等）

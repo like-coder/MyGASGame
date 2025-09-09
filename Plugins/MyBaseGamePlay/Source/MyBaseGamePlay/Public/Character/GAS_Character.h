@@ -81,9 +81,11 @@ private:
 	void StartDeathSequence();
 	// 复活
 	void Respawn();
+	// 在复活点复活
+	void RespawnInLocation();
 	// 子类中实现
 	virtual void OnDead() {}
-	virtual void OnRespawn();
+	virtual void OnRespawn() {}
 
 	// 相对于网格的变换
 	FTransform MeshRelativeTransform;
@@ -132,6 +134,14 @@ private:
 	float HeadStatGaugeVisibilityRangeSquared = 10000000.f;
 	// 用于控制头顶状态条可见性更新的定时器句柄
 	FTimerHandle HeadStatGaugeVisibilityUpdateTimerHandle;
+
+//AI相关组件
+private:
+	// 启用/禁用 AI感知刺激源组件
+	void SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled);
+	// AI感知刺激源组件
+	UPROPERTY()
+	TObjectPtr<class UAIPerceptionStimuliSourceComponent> PerceptionStimuliSourceComponent;
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")
