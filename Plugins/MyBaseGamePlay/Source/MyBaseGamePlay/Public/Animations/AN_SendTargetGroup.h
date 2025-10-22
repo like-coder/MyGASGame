@@ -1,9 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "GenericTeamAgentInterface.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "AN_SendTargetGroup.generated.h"
 
@@ -18,23 +19,27 @@ public:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 
 private:
-	// ÇòĞÎ¼ì²â°ë¾¶
+	// çƒå½¢æ£€æµ‹åŠå¾„
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
 	float SphereSweepRadius = 60.f;
 
-	// ÊÇ·ñ»æÖÆµ÷ÊÔ¹ì¼£
+	// æ˜¯å¦ç»˜åˆ¶è°ƒè¯•è½¨è¿¹
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
 	bool bDrawDebug = true;
 
-	// ÊÇ·ñºöÂÔ×Ô¼º
+	// æ˜¯å¦å¿½ç•¥è‡ªå·±
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
 	bool bIgnoreOwner = true;
 
-	// ·¢ËÍµÄTag
+	// ç›®æ ‡é˜µè¥è¿‡æ»¤ï¼ˆå¦‚åªæ”»å‡»æ•Œäººï¼‰
+	UPROPERTY(EditAnywhere, Category = "Gameplay Ability", meta = (DisplayName = "ç›®æ ‡é˜µè¥"))
+	TEnumAsByte<ETeamAttitude::Type> TargetTeam = ETeamAttitude::Hostile;
+
+	// å‘é€çš„Tag
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
 	FGameplayTag EventTag;
 
-	// ¹Ç÷ÀÃû³Æ
+	// éª¨éª¼åç§°
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
 	TArray<FName> TargetSocketNames;
 };

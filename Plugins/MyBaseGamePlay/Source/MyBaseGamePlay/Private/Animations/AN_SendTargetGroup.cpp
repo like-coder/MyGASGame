@@ -54,6 +54,15 @@ void UAN_SendTargetGroup::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 				continue;
 			}
 			HitActors.Add(HitResult.GetActor());
+			// TODO: 处理阵容
+			//检查目标阵营关系（如只攻击敌人）
+			if (OwnerTeamInterface)
+			{
+				if (OwnerTeamInterface->GetTeamAttitudeTowards(*HitResult.GetActor()) != TargetTeam)
+				{
+					continue;
+				}
+			}
 			// 创建命中数据并添加到事件数据中
 			FGameplayAbilityTargetData_SingleTargetHit* TargetHit = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
 			Data.TargetData.Add(TargetHit);
