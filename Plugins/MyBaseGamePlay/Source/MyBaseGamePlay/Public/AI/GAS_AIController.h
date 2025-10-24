@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "GAS/Core/TGameplayTags.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -41,6 +42,15 @@ private:
 	AActor* GetNextPerceivedActor() const;
 	// 如果目标已死亡，则忘记该目标（清理感知数据）
 	void ForgetActorIfDead(AActor* ActorToForget);
+
+	// 清除并禁用所有感知（如死亡时调用）
+	void ClearAndDisableAllSenses();
+
+	// 启用所有感知（如复活时调用）
+	void EnableAllSenses();
+
+	// 监听Pawn死亡Tag变化，控制AI逻辑启停
+	void PawnDeadTagUpdated(const FGameplayTag Tag, int32 Count);
 
 private:
 	// AI感知组件（用于感知敌人等）
