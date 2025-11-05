@@ -5,6 +5,7 @@
 #include "GAS/Core/TGameplayTags.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "BrainComponent.h"
 
 AGAS_AIController::AGAS_AIController()
 {
@@ -44,6 +45,12 @@ void AGAS_AIController::OnPossess(APawn* InPawn)
 	if (PawnTeamInterface)
 	{
 		PawnTeamInterface->SetGenericTeamId(GetGenericTeamId());
+	}
+
+	UAbilitySystemComponent* PawnASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InPawn);
+	if (PawnASC)
+	{
+		PawnASC->RegisterGameplayTagEvent(TGameplayTags::Stats_Dead, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGAS_AIController::PawnDeadTagUpdated);
 	}
 }
 
@@ -167,5 +174,45 @@ void AGAS_AIController::ForgetActorIfDead(AActor* ActorToForget)
 				break;
 			}
 		}
+	}
+}
+
+void AGAS_AIController::ClearAndDisableAllSenses()
+{
+	// 老化所有感知刺激到最大时间值，强制标记为过期状态
+	AIPerceptionComponent->AgeStimuli(TNumericLimits<float>::Max());
+	// 遍历所有感知配置并禁用它们
+	for (auto SenseConfigIt = AIPerceptionComponent->GetSensesConfigIterator(); SenseConfigIt; ++SenseConfigIt) 
+	{ 
+		AIPerceptionComponent->SetSenseEnabled((*SenseConfigIt)->GetSenseImplementation(), false); 
+	}
+
+	if (GetBlackboardComponent()) 
+	{
+		// 消除黑板中的目标值
+		GetBlackboardComponent()->ClearValue(TargetBlackboardKeyName);
+	}
+}
+
+void AGAS_AIController::EnableAllSenses()
+{
+	// 遍历所有感知配置并启用它们
+	for (auto SenseConfigIt = AIPerceptionComponent->GetSensesConfigIterator(); SenseConfigIt; ++SenseConfigIt)
+	{
+		AIPerceptionComponent->SetSenseEnabled((*SenseConfigIt)->GetSenseImplementation(), true);
+	}
+}
+
+void AGAS_AIController::PawnDeadTagUpdated(const FGameplayTag Tag, int32 Count)
+{
+	if (Count != 0)
+	{
+		GetBrainComponent()->StopLogic("Dead");		// 停止死亡状态下的逻辑
+		ClearAndDisableAllSenses();					// 清除感知数据
+	}
+	else
+	{
+		GetBrainComponent()->StartLogic();			// 重启AI逻辑
+		EnableAllSenses();							// 启用感知系统
 	}
 }

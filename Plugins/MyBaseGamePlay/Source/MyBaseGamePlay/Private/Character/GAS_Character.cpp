@@ -238,6 +238,11 @@ void AGAS_Character::PlayDeathAnimation()
 void AGAS_Character::StartDeathSequence()
 {
 	OnDead();
+	// 取消激活的技能
+	if (GAS_AbilitySystemComponent)
+	{
+		GAS_AbilitySystemComponent->CancelAllAbilities();
+	}
 	//播放死亡动画
 	PlayDeathAnimation();
 	// 关闭头顶血条
