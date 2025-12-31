@@ -39,12 +39,13 @@ AGAS_AIController::AGAS_AIController()
 void AGAS_AIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	// ÀÊ±„…Ë÷√µƒ∂”ŒÈ
-	SetGenericTeamId(0);
+
 	IGenericTeamAgentInterface* PawnTeamInterface = Cast<IGenericTeamAgentInterface>(InPawn);
 	if (PawnTeamInterface)
 	{
-		PawnTeamInterface->SetGenericTeamId(GetGenericTeamId());
+		SetGenericTeamId(PawnTeamInterface->GetGenericTeamId());
+		ClearAndDisableAllSenses();
+		EnableAllSenses();
 	}
 
 	UAbilitySystemComponent* PawnASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InPawn);

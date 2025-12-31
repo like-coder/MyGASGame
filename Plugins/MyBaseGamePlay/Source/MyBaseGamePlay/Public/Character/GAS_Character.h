@@ -31,6 +31,10 @@ public:
 
 	// 判断该角色是否由本地玩家控制
 	bool IsLocallyControlledByPlayer() const;
+	// 判断该角色是否死亡
+	bool IsDead() const;
+	// 重生的逻辑
+	void RespawnImmediately();
 
 //团队(Team)
 public:

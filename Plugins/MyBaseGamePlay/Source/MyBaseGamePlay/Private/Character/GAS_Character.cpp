@@ -112,6 +112,20 @@ bool AGAS_Character::IsLocallyControlledByPlayer() const
 	return GetController() && GetController()->IsLocalPlayerController();
 }
 
+bool AGAS_Character::IsDead() const
+{
+	return GetAbilitySystemComponent()->HasMatchingGameplayTag(TGameplayTags::Stats_Dead);
+}
+
+void AGAS_Character::RespawnImmediately()
+{
+	// 仅在服务器上执行：移除所有带有“死亡”标签的激活效果，实现立即复活
+	if (HasAuthority())
+	{
+		GetAbilitySystemComponent()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(TGameplayTags::Stats_Dead));
+	}
+}
+
 PRAGMA_DISABLE_OPTIMIZATION
 void AGAS_Character::ConfigureOverHeadStatusWidget()
 {
@@ -205,7 +219,10 @@ void AGAS_Character::SetStatusGaugeEnabled(bool bIsEnabled)
 
 void AGAS_Character::DeathMontageFinished()
 {
-	SetRagdollEnabled(true);
+	if (IsDead())
+	{
+		SetRagdollEnabled(true);
+	}
 }
 
 void AGAS_Character::SetRagdollEnabled(bool bIsEnabled)
