@@ -6,15 +6,17 @@
 
 namespace TGameplayTags
 {
-	// ""Ë«ÒıºÅÄÚµÄÊÇtagµÄ¶¨ÒåÃû³Æ£¬µÚ¶şÌõµÄÊÇÊÇ¿ÉÒÔÌí¼Ó×¢ÊÍµÄ·½·¨
+	// ""åŒå¼•å·å†…çš„æ˜¯tagçš„å®šä¹‰åç§°ï¼Œç¬¬äºŒæ¡çš„æ˜¯æ˜¯å¯ä»¥æ·»åŠ æ³¨é‡Šçš„æ–¹æ³•
 	//UE_DEFINE_GAMEPLAY_TAG(Ability_BasicAttack, "Ability.BasicAttack")
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_BasicAttack, "Ability.BasicAttack", "»ù´¡¹¥»÷ÄÜÁ¦");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Change, "Ability.Combo.Change", "Á¬»÷ÇĞ»»");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Change_Combo02, "Ability.Combo.Change.Combo02", "Á¬»÷ÇĞ»»Á¬¶Î2");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Change_Combo03, "Ability.Combo.Change.Combo03", "Á¬»÷ÇĞ»»Á¬¶Î3");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Change_Combo04, "Ability.Combo.Change.Combo04", "Á¬»÷ÇĞ»»Á¬¶Î4");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Change_End, "Ability.Combo.Change.End", "Á¬»÷ÇĞ»»½áÊø");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Damage, "Ability.Combo.Damage", "Á¬»÷ÉËº¦");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Stats_Dead, "Stats.Dead", "ËÀÍö");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_BasicAttack, "Ability.BasicAttack", "åŸºç¡€æ”»å‡»èƒ½åŠ›");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Change, "Ability.Combo.Change", "è¿å‡»åˆ‡æ¢");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Change_Combo02, "Ability.Combo.Change.Combo02", "è¿å‡»åˆ‡æ¢è¿æ®µ2");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Change_Combo03, "Ability.Combo.Change.Combo03", "è¿å‡»åˆ‡æ¢è¿æ®µ3");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Change_Combo04, "Ability.Combo.Change.Combo04", "è¿å‡»åˆ‡æ¢è¿æ®µ4");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Change_End, "Ability.Combo.Change.End", "è¿å‡»åˆ‡æ¢ç»“æŸ");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Combo_Damage, "Ability.Combo.Damage", "è¿å‡»ä¼¤å®³");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Stats_Dead, "Stats.Dead", "æ­»äº¡");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Uppercut_Launch, "Ability.Uppercut.Launch", "å‡é¾™æ‹³æ”»å‡»")
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Passive_Launch_Activate, "Ability.Passive.Launch.Activate", "å‡»é£è¢«åŠ¨æŠ€èƒ½æ¿€æ´»")
 
 }

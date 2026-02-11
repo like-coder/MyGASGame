@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -17,35 +17,35 @@ class UI_API UValueGauge : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	// Ô¤¹¹Ôìº¯Êı
+	// é¢„æ„é€ å‡½æ•°
 	virtual void NativePreConstruct() override;
 	/**
-	 * @brief °ó¶¨µ½ÓÎÏ·ÊôĞÔ²¢ÉèÖÃµ±Ç°ÖµÓë×î´óÖµ
+	 * @brief ç»‘å®šåˆ°æ¸¸æˆå±æ€§å¹¶è®¾ç½®å½“å‰å€¼ä¸æœ€å¤§å€¼
 	 *
-	 * ½«¸ÃÊıÖµÖ¸Ê¾Æ÷°ó¶¨µ½Ö¸¶¨µÄÄÜÁ¦ÏµÍ³×é¼şÖĞµÄÓÎÏ·ÊôĞÔ£¬
-	 * Í¬Ê±Ò²°ó¶¨µ½¶ÔÓ¦µÄ×î´óÖµÊôĞÔ¡£µ±ÊôĞÔÖµ·¢Éú±ä»¯Ê±£¬
-	 * Ö¸Ê¾Æ÷»á×Ô¶¯¸üĞÂÏÔÊ¾¡£
+	 * å°†è¯¥æ•°å€¼æŒ‡ç¤ºå™¨ç»‘å®šåˆ°æŒ‡å®šçš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶ä¸­çš„æ¸¸æˆå±æ€§ï¼Œ
+	 * åŒæ—¶ä¹Ÿç»‘å®šåˆ°å¯¹åº”çš„æœ€å¤§å€¼å±æ€§ã€‚å½“å±æ€§å€¼å‘ç”Ÿå˜åŒ–æ—¶ï¼Œ
+	 * æŒ‡ç¤ºå™¨ä¼šè‡ªåŠ¨æ›´æ–°æ˜¾ç¤ºã€‚
 	 *
-	 * @param AbilitySystemComponent ÄÜÁ¦ÏµÍ³×é¼ş£¬ÓÃÓÚ×¢²áºÍ¼àÌıÊôĞÔ±ä»¯
-	 * @param Attribute µ±Ç°ÖµµÄÓÎÏ·ÊôĞÔ
-	 * @param MaxAttribute ×î´óÖµµÄÓÎÏ·ÊôĞÔ
+	 * @param AbilitySystemComponent èƒ½åŠ›ç³»ç»Ÿç»„ä»¶ï¼Œç”¨äºæ³¨å†Œå’Œç›‘å¬å±æ€§å˜åŒ–
+	 * @param Attribute å½“å‰å€¼çš„æ¸¸æˆå±æ€§
+	 * @param MaxAttribute æœ€å¤§å€¼çš„æ¸¸æˆå±æ€§
 	 */
 	void SetAndBoundToGameplayAttribute(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute, const FGameplayAttribute& MaxAttribute);
 	void SetValue(float NewValue, float NewMaxValue);
-	//ÉèÖÃ½ø¶ÈÌõÑÕÉ«
+	//è®¾ç½®è¿›åº¦æ¡é¢œè‰²
 	void SetBarColor(FLinearColor NewBarColor);
 
 private:
-	// »Øµ÷ÓÃº¯Êı
+	// å›è°ƒç”¨å‡½æ•°
 	void ValueChanged(const FOnAttributeChangeData& ChangeData);
 	void MaxValueChanged(const FOnAttributeChangeData& ChangeData);
 
-	// »º´æÊôĞÔ
+	// ç¼“å­˜å±æ€§
 	float CachedValue;
 	float CachedMaxValue;
 
 private:
-	// ÉèÖÃ½ø¶ÈÌõµÄÑÕÉ«
+	// è®¾ç½®è¿›åº¦æ¡çš„é¢œè‰²
 	UPROPERTY(EditAnywhere, Category = "Visual")
 	FLinearColor BarColor;
 
@@ -57,4 +57,16 @@ private:
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
 	TObjectPtr<UTextBlock> ValueText;
+
+	// æ•°å€¼æ–‡æœ¬å­—ä½“
+	UPROPERTY(EditAnywhere, Category = "Visual")
+	FSlateFontInfo ValueTextFont;
+
+	// æ˜¯å¦æ˜¾ç¤ºæ•°å€¼æ–‡æœ¬
+	UPROPERTY(EditAnywhere, Category = "Visual")
+	bool bValueTextVisible = true;
+
+	// æ˜¯å¦æ˜¾ç¤ºè¿›åº¦æ¡
+	UPROPERTY(EditAnywhere, Category = "Visual")
+	bool bProgressBarVisible = true;
 };

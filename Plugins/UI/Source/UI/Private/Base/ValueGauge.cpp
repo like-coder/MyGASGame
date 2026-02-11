@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Base/ValueGauge.h"
@@ -9,35 +9,34 @@ void UValueGauge::NativePreConstruct()
 	Super::NativePreConstruct();
 	if (ProgressBar->IsValidLowLevel())
 	{
+		// è®¾ç½®è¿›åº¦æ¡é¢œè‰²
 		ProgressBar->SetFillColorAndOpacity(BarColor);
+		ProgressBar->SetVisibility(bProgressBarVisible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	}
+	
+	if (ValueText)
+	{
+		ValueText->SetFont(ValueTextFont);
+		ValueText->SetVisibility(bValueTextVisible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	}
 
-	//if (ValueText)
-	//{
-	//	// »ñÈ¡µ±Ç°×ÖÌåÉèÖÃ
-	//	FSlateFontInfo FontInfo = ValueText->GetFont();
-	//	// ¸üÐÂ×ÖÌå´óÐ¡
-	//	//FontInfo.Size = TextSize;
-	//	// Ó¦ÓÃÐÂµÄ×ÖÌåÉèÖÃµ½ÎÄ±¾×é¼þ
-	//	ValueText->SetFont(FontInfo);
-	//}
 }
 
 void UValueGauge::SetAndBoundToGameplayAttribute(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute, const FGameplayAttribute& MaxAttribute)
 {
 	if (AbilitySystemComponent)
 	{
-		// ´ÓÄÜÁ¦ÏµÍ³×é¼þÖÐ»ñÈ¡µ±Ç°ÊôÐÔÖµºÍ×î´óÖµÊôÐÔÖµ
+		// ä»Žèƒ½åŠ›ç³»ç»Ÿç»„ä»¶ä¸­èŽ·å–å½“å‰å±žæ€§å€¼å’Œæœ€å¤§å€¼å±žæ€§å€¼
 		bool bFound;
 		float Value = AbilitySystemComponent->GetGameplayAttributeValue(Attribute, bFound);
 		float MaxValue = AbilitySystemComponent->GetGameplayAttributeValue(MaxAttribute, bFound);
 
-		// Èç¹û³É¹¦ÕÒµ½¶ÔÓ¦µÄÊôÐÔÖµ£¬Ôò¸üÐÂÊýÖµÖ¸Ê¾Æ÷µÄÏÔÊ¾
+		// å¦‚æžœæˆåŠŸæ‰¾åˆ°å¯¹åº”çš„å±žæ€§å€¼ï¼Œåˆ™æ›´æ–°æ•°å€¼æŒ‡ç¤ºå™¨çš„æ˜¾ç¤º
 		if (bFound)
 		{
 			SetValue(Value, MaxValue);
 		}
-		// ×¢²áÊôÐÔ±ä»¯»Øµ÷£¬µ±ÊôÐÔÖµ·¢Éú±ä»¯Ê±¸üÐÂÊýÖµÖ¸Ê¾Æ÷ÏÔÊ¾
+		// æ³¨å†Œå±žæ€§å˜åŒ–å›žè°ƒï¼Œå½“å±žæ€§å€¼å‘ç”Ÿå˜åŒ–æ—¶æ›´æ–°æ•°å€¼æŒ‡ç¤ºå™¨æ˜¾ç¤º
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &UValueGauge::ValueChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MaxAttribute).AddUObject(this, &UValueGauge::MaxValueChanged);
 	}
@@ -45,31 +44,31 @@ void UValueGauge::SetAndBoundToGameplayAttribute(UAbilitySystemComponent* Abilit
 
 void UValueGauge::SetValue(const float NewValue, const float NewMaxValue)
 {
-	// »º´æÊôÐÔÖµ
+	// ç¼“å­˜å±žæ€§å€¼
 	CachedValue = NewValue;
 	CachedMaxValue = NewMaxValue;
 	if (NewMaxValue == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Value Gauge: %s, ÐÂµÄ×î´óÖµ²»ÄÜÎª0"), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("Value Gauge: %s, æ–°çš„æœ€å¤§å€¼ä¸èƒ½ä¸º0"), *GetName());
 		return;
 	}
-	// ÉèÖÃ½ø¶ÈÌõ°Ù·Ö±È
+	// è®¾ç½®è¿›åº¦æ¡ç™¾åˆ†æ¯”
 	ProgressBar->SetPercent(NewValue / NewMaxValue);
-	// ÉèÖÃÊý×Ö¸ñÊ½Ñ¡Ïî£¬×î´óÐ¡ÊýÎ»ÊýÎª0
+	// è®¾ç½®æ•°å­—æ ¼å¼é€‰é¡¹ï¼Œæœ€å¤§å°æ•°ä½æ•°ä¸º0
 	const FNumberFormattingOptions FormatOps = FNumberFormattingOptions().SetMaximumFractionalDigits(0);
-	// ¸üÐÂÎÄ±¾ÏÔÊ¾
+	// æ›´æ–°æ–‡æœ¬æ˜¾ç¤º
 	ValueText->SetText(
 		FText::Format(
-			FTextFormat::FromString("{0}/{1}"),			 // ¸ñÊ½×Ö·û´®
-			FText::AsNumber(NewValue, &FormatOps),       // µ±Ç°Öµ
-			FText::AsNumber(NewMaxValue, &FormatOps)     // ×î´óÖµ
+			FTextFormat::FromString("{0}/{1}"),			 // æ ¼å¼å­—ç¬¦ä¸²
+			FText::AsNumber(NewValue, &FormatOps),       // å½“å‰å€¼
+			FText::AsNumber(NewMaxValue, &FormatOps)     // æœ€å¤§å€¼
 		)
 	);
 }
 
 void UValueGauge::SetBarColor(FLinearColor NewBarColor)
 {
-	// ÉèÖÃ½ø¶ÈÌõÑÕÉ«
+	// è®¾ç½®è¿›åº¦æ¡é¢œè‰²
 	BarColor = NewBarColor;
 	ProgressBar->SetFillColorAndOpacity(BarColor);
 }
